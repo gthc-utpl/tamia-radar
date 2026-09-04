@@ -28,7 +28,7 @@ authors:
     affiliation: "Universidad Técnica Particular de Loja (UTPL)"
 license: MIT
 version: "1.0.0"
-# repository-code: "https://github.com/<ORG>/tamia-radar"   # completar al crear el repositorio
+repository-code: "https://github.com/gthc-utpl/tamia-radar"
 # doi: "10.5281/zenodo.XXXXXXXX"                            # lo acuña Zenodo en el primer release
 keywords:
   - weather radar
