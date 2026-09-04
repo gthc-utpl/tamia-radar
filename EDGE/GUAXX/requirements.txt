@@ -1,0 +1,13 @@
+# Dependencias para EDGE GUAXX (Uploader + Procesador)
+# Instalar en el equipo del radar: pip install -r requirements.txt
+
+# --- Uploader (radar_edge_uploader_guaxx.py) ---
+requests>=2.31.0
+watchdog>=3.0.0
+
+# --- Procesador (generar_png_radar.py) ---
+numpy
+netCDF4
+rasterio
+Pillow
+pyproj

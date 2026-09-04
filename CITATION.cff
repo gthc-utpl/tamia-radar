@@ -1,0 +1,61 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite both the software itself and the accompanying paper."
+title: "TAMIA: Edge Computing System for Real-Time Weather Radar Reflectivity"
+abstract: >-
+  TAMIA (Tropical Andean Meteorological Imaging Architecture) is a three-layer
+  edge-cloud system for real-time processing and visualization of the horizontal
+  reflectivity field (DBZH) of weather radars. Edge nodes co-located with each
+  radar run the full DBZH pipeline locally — multi-elevation compositing,
+  adaptive ground-clutter correction and polar-to-Cartesian projection with
+  explicit WGS84 bounds — and upload only the resulting georeferenced PNG to a
+  central FastAPI + PostgreSQL service, which pushes it to a React + Leaflet web
+  viewer over WebSocket. Deployed on the LOXX and GUAXX X-band radars of the
+  RadarNet-Sur network in southern Ecuador. "Tamia" means "rain" in Kichwa.
+type: software
+authors:
+  - family-names: "Quiñones-Cuenca"
+    given-names: "Santiago"
+    orcid: "https://orcid.org/0000-0001-5894-9882"
+    affiliation: "Universidad Técnica Particular de Loja (UTPL)"
+    email: "lsquinones@utpl.edu.ec"
+  - family-names: "Fries"
+    given-names: "Andreas"
+    orcid: "https://orcid.org/0000-0002-4447-6137"
+    affiliation: "Universidad Técnica Particular de Loja (UTPL)"
+  - family-names: "Quiñones-Cuenca"
+    given-names: "Manuel"
+    orcid: "https://orcid.org/0000-0002-2932-1524"
+    affiliation: "Universidad Técnica Particular de Loja (UTPL)"
+license: MIT
+version: "1.0.0"
+# repository-code: "https://github.com/<ORG>/tamia-radar"   # completar al crear el repositorio
+# doi: "10.5281/zenodo.XXXXXXXX"                            # lo acuña Zenodo en el primer release
+keywords:
+  - weather radar
+  - edge computing
+  - reflectivity
+  - DBZH
+  - real-time visualization
+  - ODIM HDF5
+  - tropical Andes
+  - Ecuador
+  - RadarNet-Sur
+
+# Cita preferida: el artículo. Actualizar volumen, páginas y DOI al publicarse.
+preferred-citation:
+  type: article
+  title: "TAMIA: An Edge Computing System for Real-Time Processing and Visualization of Weather Radar Reflectivity in the Ecuadorian Andes"
+  authors:
+    - family-names: "Quiñones-Cuenca"
+      given-names: "Santiago"
+      orcid: "https://orcid.org/0000-0001-5894-9882"
+    - family-names: "Fries"
+      given-names: "Andreas"
+      orcid: "https://orcid.org/0000-0002-4447-6137"
+    - family-names: "Quiñones-Cuenca"
+      given-names: "Manuel"
+      orcid: "https://orcid.org/0000-0002-2932-1524"
+  journal: "Remote Sensing"
+  publisher:
+    name: "MDPI"
+  year: 2026

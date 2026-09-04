@@ -1,0 +1,23 @@
+Example radar data — License
+=============================
+
+The radar data files contained in this directory (ODIM HDF5 `.h5.gz` frames of
+the LOXX radar, including the clutter_data subset) are provided as a small
+example dataset for the sole purpose of reproducing the results of the
+accompanying publication.
+
+These data are licensed under the
+Creative Commons Attribution 4.0 International License (CC BY 4.0).
+Full license text: https://creativecommons.org/licenses/by/4.0/
+
+You are free to share and adapt the data for any purpose, provided that you give
+appropriate credit.
+
+Attribution:
+  Radar data © 2026 Universidad Técnica Particular de Loja (UTPL) —
+  Grupo de investigación en Tecnologías Hidrológicas y Climáticas (GTHC) /
+  Climate Observatory. LOXX radar, RadarNet-Sur network.
+
+Note: This license (CC BY 4.0) applies to the DATA in this directory only.
+The SOFTWARE in this repository is licensed separately under the MIT License
+(see the LICENSE file at the repository root).

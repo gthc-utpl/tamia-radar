@@ -1,0 +1,13 @@
+# Plantilla de configuración del uploader (NO contiene secretos reales).
+# Copiar a 'uploader_config.ini' y completar. Ese archivo está en .gitignore.
+#
+# Alternativa recomendada en el nodo: definir variables de entorno
+#   RADAR_API_KEY, RADAR_API_URL, RADAR_WATCH_DIR, RADAR_OUTPUT_DIR
+# (tienen prioridad sobre este archivo).
+
+[uploader]
+api_url = http://localhost:8000
+api_key = PON_AQUI_LA_CLAVE_NUEVA_ROTADA
+radar_id = loxx
+watch_dir = F:\LOXX\H5
+output_dir = E:\RainfallMonitorV2\data\h5\output\png_individual

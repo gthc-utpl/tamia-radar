@@ -1,0 +1,12 @@
+# Secretos y configuración local del nodo — NUNCA subir al repo
+uploader_config.ini
+.env
+
+# Colas / estado de runtime
+upload_retry_queue.json
+
+# Artefactos temporales
+__pycache__/
+*.pyc
+_test_*.png
+_view_*.png

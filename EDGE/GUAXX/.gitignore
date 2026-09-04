@@ -1,0 +1,9 @@
+# Secretos y config local del nodo — NUNCA subir
+.env
+
+# Salidas y temporales
+output/
+*.png
+*.json
+__pycache__/
+*.pyc

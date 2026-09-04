@@ -1,0 +1,25 @@
+# Dependencias para EDGE LOXX (Uploader + Procesador + Módulo Georef)
+# Instalar en el equipo del radar: pip install -r requirements.txt
+#
+# NOTA: GDAL y cartopy son difíciles de instalar via pip en Windows.
+# Se recomienda usar conda:
+#   conda install gdal cartopy
+# O instalar wheels precompilados si se usa pip puro.
+
+# --- Uploader (radar_edge_uploader_loxx.py) ---
+requests>=2.31.0
+watchdog>=3.0.0
+
+# --- Procesador (generar_png_loxx.py) ---
+numpy
+h5py
+scipy
+matplotlib
+Pillow
+
+# --- Módulo Georef (loxx_dbzh_georeferenciado.py) ---
+pyproj
+GDAL
+cartopy
+imageio
+psutil

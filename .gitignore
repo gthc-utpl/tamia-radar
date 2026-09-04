@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Node / web viewer
+node_modules/
+dist/
+.vite/
+
+# Secrets (only *.example templates are tracked)
+.env
+uploader_config.ini
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
