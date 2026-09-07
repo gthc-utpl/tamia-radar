@@ -45,7 +45,7 @@ keywords:
 # Cita preferida: el artículo. Actualizar volumen, páginas y DOI al publicarse.
 preferred-citation:
   type: article
-  title: "TAMIA: An Edge Computing System for Real-Time Processing and Visualization of Weather Radar Reflectivity in the Ecuadorian Andes"
+  title: "TAMIA: An Edge Computing System for Real-Time Processing and Visualization of Weather Radar Reflectivity in the Tropical Andes"
   authors:
     - family-names: "Quiñones-Cuenca"
       given-names: "Santiago"

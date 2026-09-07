@@ -6,7 +6,7 @@ described in the paper below. *Tamia* means "rain" in Kichwa.
 Source code accompanying the paper:
 
 > **TAMIA: An Edge Computing System for Real-Time Processing and Visualization
-> of Weather Radar Reflectivity in the Ecuadorian Andes.**
+> of Weather Radar Reflectivity in the Tropical Andes.**
 > S. Quiñones-Cuenca, A. Fries, M. Quiñones-Cuenca.
 > Universidad Técnica Particular de Loja (UTPL), Loja, Ecuador. *(in preparation, Remote Sensing, MDPI).*
 
