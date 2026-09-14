@@ -165,8 +165,13 @@ class RadarEdgeUploader(FileSystemEventHandler):
 
         # Fallback: bounds desde coordenadas fijas del radar. center = [lat, lon]
         # (consistente con el metadata normal; antes estaba invertido).
-        lat_off = LOXX_RADIUS_KM / 111.320
-        lon_off = LOXX_RADIUS_KM / (111.320 * math.cos(math.radians(LOXX_LAT)))
+        # Longitud real del grado a la latitud del radar (WGS84), no 111.320
+        # para ambos ejes: esa constante comprimía la imagen 0.67 % en N-S.
+        phi = math.radians(LOXX_LAT)
+        km_per_deg_lat = (111132.954 - 559.822 * math.cos(2 * phi) + 1.175 * math.cos(4 * phi)) / 1000.0
+        km_per_deg_lon = (111412.84 * math.cos(phi) - 93.5 * math.cos(3 * phi)) / 1000.0
+        lat_off = LOXX_RADIUS_KM / km_per_deg_lat
+        lon_off = LOXX_RADIUS_KM / km_per_deg_lon
         bounds = [[LOXX_LAT - lat_off, LOXX_LON - lon_off],
                   [LOXX_LAT + lat_off, LOXX_LON + lon_off]]
         return bounds, [LOXX_LAT, LOXX_LON], None

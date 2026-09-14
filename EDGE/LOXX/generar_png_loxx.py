@@ -229,10 +229,22 @@ def format_timestamp_for_display(timestamp):
         return timestamp
 
 
-def calculate_bounds_from_metadata(center_lat, center_lon, max_radius_meters):
+def meters_per_degree(center_lat):
+    """Longitud (m) de un grado de latitud y de longitud a la latitud dada
+    (serie estándar sobre WGS84, error < 1 m). Sustituye la constante 111320
+    usada antes también para la latitud, que comprimía la imagen un 0.67 %
+    en N-S (~630 m en los bordes del lienzo a la latitud de LOXX)."""
     import math
-    lat_offset = max_radius_meters / 111320.0
-    lon_offset = max_radius_meters / (111320.0 * math.cos(math.radians(center_lat)))
+    phi = math.radians(center_lat)
+    m_per_deg_lat = 111132.954 - 559.822 * math.cos(2 * phi) + 1.175 * math.cos(4 * phi)
+    m_per_deg_lon = 111412.84 * math.cos(phi) - 93.5 * math.cos(3 * phi)
+    return m_per_deg_lat, m_per_deg_lon
+
+
+def calculate_bounds_from_metadata(center_lat, center_lon, max_radius_meters):
+    m_per_deg_lat, m_per_deg_lon = meters_per_degree(center_lat)
+    lat_offset = max_radius_meters / m_per_deg_lat
+    lon_offset = max_radius_meters / m_per_deg_lon
     lat_sw = center_lat - lat_offset
     lon_sw = center_lon - lon_offset
     lat_ne = center_lat + lat_offset
@@ -242,7 +254,7 @@ def calculate_bounds_from_metadata(center_lat, center_lon, max_radius_meters):
     print(f"  Centro: [{center_lat:.6f}, {center_lon:.6f}]")
     print(f"  SW: [{lat_sw:.6f}, {lon_sw:.6f}]")
     print(f"  NE: [{lat_ne:.6f}, {lon_ne:.6f}]")
-    print(f"  Radio: {max_radius_meters/1000:.1f} km")
+    print(f"  Radio: {max_radius_meters/1000:.1f} km  (m/grado: lat {m_per_deg_lat:.0f}, lon {m_per_deg_lon:.0f})")
     return bounds
 
 
