@@ -1,6 +1,9 @@
 # Secretos y config local del nodo — NUNCA subir
 .env
 
+# Colas / estado de runtime
+upload_retry_queue.json
+
 # Salidas y temporales
 output/
 *.png

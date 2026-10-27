@@ -13,7 +13,7 @@ Input: NetCDF4 (`.nc4`). Center: −4.0333, −79.8667. Coverage: ~100 km.
 | File | Purpose |
 |------|---------|
 | `generar_png_radar.py` | Processing pipeline. Reads one `.nc4` frame and produces an RGBA PNG using the Furuno WR110 "v8" 13-class color scale (discrete classes; transparent below 8 dBZ). |
-| `radar_edge_uploader_guaxx.py` | `watchdog` service: on each new file, runs the pipeline and uploads the PNG to the API. The API key is read from `.env` / the `RADAR_API_KEY` environment variable; if absent, the service does not start. |
+| `radar_edge_uploader_guaxx.py` | `watchdog` service: on each new file, runs the pipeline and uploads the PNG to the API. The API key is read from `.env` / the `RADAR_API_KEY` environment variable; if absent, the service does not start. Failed uploads (link down, API unreachable) are appended to a persistent retry queue (`output/upload_retry_queue.json`) and resent at start-up and before each new frame, so no frame is lost during an outage. |
 | `config.ini` | Radar, processing and geo configuration (input path, resolution, gain/offset, CRS, center). |
 | `.env.example` | Template for the node environment (copy to `.env` and fill in). |
 | `requirements.txt` | Python dependencies. |

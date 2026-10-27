@@ -1,0 +1,23 @@
+Evaluation data — License
+=========================
+
+The measurement records contained in this directory (CSV files, their data
+dictionary README.md and the reproduction script) document the operational
+evaluation reported in the accompanying publication (TAMIA, Remote Sensing,
+MDPI, 2026).
+
+These data are licensed under the
+Creative Commons Attribution 4.0 International License (CC BY 4.0).
+Full license text: https://creativecommons.org/licenses/by/4.0/
+
+You are free to share and adapt the data for any purpose, provided that you give
+appropriate credit.
+
+Attribution:
+  Evaluation records © 2026 Universidad Técnica Particular de Loja (UTPL) —
+  Grupo de investigación en Tecnologías Hidrológicas y Climáticas (GTHC) /
+  Climate Observatory. LOXX and GUAXX radars, RadarNet-Sur network.
+
+Note: This license (CC BY 4.0) applies to the DATA in this directory only.
+The SOFTWARE in this repository, including reproduce_key_figures.py, is
+licensed under the MIT License (see the LICENSE file at the repository root).

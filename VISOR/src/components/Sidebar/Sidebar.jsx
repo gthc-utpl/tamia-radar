@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import useStore from '../../store/useStore'
 import { RADARS, BASE_LAYERS } from '../../config/radars'
+import { getFreshness, formatAge } from '../../utils/freshness'
 
 /* ── Switch ──────────────────────────────────────────── */
 function Switch({ checked, onChange }) {
@@ -21,7 +22,24 @@ function Switch({ checked, onChange }) {
 }
 
 /* ── Radar toggle row ────────────────────────────────── */
-function RadarToggle({ radar, checked, onChange }) {
+function RadarToggle({ radar, checked, onChange, record }) {
+  const freshness = getFreshness(record?.timestamp)
+  const age = record ? formatAge(record.timestamp) : null
+
+  const dotClass = {
+    fresh: 'bg-green-400',
+    stale: 'bg-amber-400',
+    offline: 'bg-red-400',
+    'no-data': 'bg-gray-600',
+  }[freshness]
+
+  const ageClass = {
+    fresh: 'text-green-400',
+    stale: 'text-amber-400',
+    offline: 'text-red-400',
+    'no-data': 'text-gray-500',
+  }[freshness]
+
   return (
     <div className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors
       ${checked ? 'bg-white/5' : 'hover:bg-white/3'}`}>
@@ -30,8 +48,16 @@ function RadarToggle({ radar, checked, onChange }) {
         style={{ backgroundColor: checked ? radar.colorHex : 'transparent', borderColor: radar.colorHex }}
       />
       <div className="flex-1 min-w-0">
-        <span className="text-[13px] font-medium text-gray-100">{radar.name}</span>
-        <span className="text-[11px] text-gray-500 ml-1.5">{radar.location}</span>
+        <div className="flex items-center gap-1.5">
+          <span className="text-[13px] font-medium text-gray-100">{radar.name}</span>
+          <span className="text-[11px] text-gray-500">{radar.location}</span>
+        </div>
+        <div className="flex items-center gap-1 mt-0.5">
+          <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${dotClass}`} />
+          <span className={`text-[10px] ${ageClass}`}>
+            {age ?? 'sin datos'}
+          </span>
+        </div>
       </div>
       <Switch checked={checked} onChange={onChange} />
     </div>
@@ -125,7 +151,7 @@ function BaseLayerSelector() {
 /* ── Radar info card ─────────────────────────────────── */
 function RadarCard({ radar }) {
   const rows = [
-    ['Cobertura', `${radar.coverageKm} km`],
+    ['Cobertura', `${Math.round(radar.coverageKm)} km`],
     ['Resolución', radar.resolution],
     ['Actualización', radar.frequency],
     ['Coords', `${radar.lat.toFixed(4)}°, ${radar.lon.toFixed(4)}°`],
@@ -169,7 +195,15 @@ export default function Sidebar() {
   const setShowMarkers = useStore((s) => s.setShowMarkers)
   const showCoverage = useStore((s) => s.showCoverage)
   const setShowCoverage = useStore((s) => s.setShowCoverage)
+  const latestRecords = useStore((s) => s.latestRecords)
   const closeRef = useRef(null)
+  const [, setTick] = useState(0)
+
+  useEffect(() => {
+    if (!isOpen) return
+    const id = setInterval(() => setTick((t) => t + 1), 30000)
+    return () => clearInterval(id)
+  }, [isOpen])
 
   const handleClose = useCallback(() => setSidebarOpen(false), [setSidebarOpen])
 
@@ -243,6 +277,7 @@ export default function Sidebar() {
                   radar={radar}
                   checked={radarVisibility[id]}
                   onChange={(v) => setRadarVisibility(id, v)}
+                  record={latestRecords[id]}
                 />
               ))}
             </div>

@@ -1,12 +1,18 @@
 // radarService.js - Adaptado para API REST GTHC (reemplaza lectura de index.json)
 import { RADARS } from '../config/radars'
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000'
+export const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000'
 
 async function fetchJson(url) {
   const res = await fetch(url)
   if (!res.ok) throw new Error(`HTTP ${res.status}: ${url}`)
   return res.json()
+}
+
+function toLocalISOString(date) {
+  const d = new Date(date)
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset())
+  return d.toISOString().slice(0, 16)
 }
 
 /**
@@ -35,7 +41,8 @@ export async function fetchLatestRecord(radarId) {
  */
 export async function fetchRecordsForPeriod(radarId, endDate, hoursBack) {
   try {
-    const frames = await fetchJson(`${API_BASE}/frames/${radarId}?hours_back=${hoursBack}`)
+    const endParam = encodeURIComponent(toLocalISOString(endDate))
+    const frames = await fetchJson(`${API_BASE}/frames/${radarId}?hours_back=${hoursBack}&end_date=${endParam}`)
 
     return frames
       .map((record) => ({

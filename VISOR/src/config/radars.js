@@ -20,9 +20,10 @@ export const RADARS = {
     name: 'LOXX',
     location: 'Loja',
     // Coordenadas UTM: 705920, 9558850 (EPSG:32717) → WGS84
+    // Corregido: antes era -3.98687, -79.14434 (desviado ~250m)
     lat: -3.989060,
     lon: -79.145308,
-    coverageKm: 70,
+    coverageKm: 70.4,
     dataPath: 'data/loxx',
     color: 'rgba(30, 144, 255, 0.7)',
     colorHex: '#1E90FF',
@@ -62,11 +63,6 @@ export const ANIMATION_CONFIG = {
   autoRefreshInterval: 3 * 60 * 1000, // ms — auto-refresh during live animation
 }
 
-// Escala de reflectividad OFICIAL Furuno WR110 (familia jet), 10-70 dBZ paso 5,
-// MÁS una clase inferior 8-10 dBZ (navy) para que el piso de la leyenda coincida
-// con el umbral de ruido calibrado del nodo (MIN_DBZH_THRESHOLD = 8 dBZ).
-// IMPORTANTE: estos hex DEBEN ser idénticos al LUT del nodo (DBZH_COLORS en
-// EDGE/LOXX/.../generar_png_loxx.py) y de GUAXX. Si cambia uno, cambiar el otro.
 export const DBZ_LEGEND = [
   { range: '8-10', color: '#000080', description: 'Muy débil' },
   { range: '10-15', color: '#0000B4', description: 'Débil' },
@@ -82,6 +78,7 @@ export const DBZ_LEGEND = [
   { range: '60-65', color: '#E00000', description: 'Extrema' },
   { range: '65-70', color: '#900000', description: 'Extrema / granizo' },
 ]
+
 
 export const BASE_LAYERS = {
   osm: {
@@ -99,4 +96,9 @@ export const BASE_LAYERS = {
     url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
     attribution: '&copy; CartoDB',
   },
+}
+
+export const RADAR_FRESHNESS = {
+  freshMinutes: 15,
+  staleMinutes: 60,
 }

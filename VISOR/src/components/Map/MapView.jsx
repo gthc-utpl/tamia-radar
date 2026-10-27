@@ -112,7 +112,11 @@ export default function MapView({ mapRef }) {
   const showCoverage = useStore((s) => s.showCoverage)
   const latestRecords = useStore((s) => s.latestRecords)
   const animationActive = useStore((s) => s.animationActive)
+  const customDate = useStore((s) => s.customDate)
   const frameData = useCurrentFrame()
+
+  // Freshness check only applies in live mode (no historical date selected)
+  const isLive = !animationActive
 
   const radarEntries = useMemo(() => Object.entries(RADARS), [])
 
@@ -149,7 +153,7 @@ export default function MapView({ mapRef }) {
               <strong style={{ color: radar.colorHex }}>{radar.name}</strong>
               <span className="text-gray-500"> — {radar.location}</span>
               <br />
-              Cobertura: {radar.coverageKm} km
+              Cobertura: {Math.round(radar.coverageKm)} km
               <br />
               Resolución: {radar.resolution}
               <br />
@@ -172,7 +176,7 @@ export default function MapView({ mapRef }) {
               <div className="text-sm">
                 <strong>{radar.name}</strong> - {radar.location}
                 <br />
-                Cobertura: {radar.coverageKm} km
+                Cobertura: {Math.round(radar.coverageKm)} km
                 <br />
                 Resolución: {radar.resolution}
                 <br />
@@ -194,6 +198,7 @@ export default function MapView({ mapRef }) {
             record={record}
             opacity={radarOpacity}
             visible={radarVisibility[id]}
+            isLive={isLive}
           />
         )
       })}

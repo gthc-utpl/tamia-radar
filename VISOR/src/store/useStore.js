@@ -9,6 +9,7 @@ const useStore = create((set, get) => ({
   showCoverage: false,
   latestRecords: { guaxx: null, loxx: null },
   activeBaseLayer: 'osm',
+  wsStatus: 'idle', // 'idle' | 'connecting' | 'connected' | 'disconnected' | 'error' | 'disabled'
 
   // Animation state
   animationActive: false,
@@ -49,6 +50,7 @@ const useStore = create((set, get) => ({
       latestRecords: { ...s.latestRecords, [radarId]: record },
     })),
   setActiveBaseLayer: (layer) => set({ activeBaseLayer: layer }),
+  setWsStatus: (status) => set({ wsStatus: status }),
 
   // Actions - Animation
   setAnimationActive: (active) => set({ animationActive: active }),

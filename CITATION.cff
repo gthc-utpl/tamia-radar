@@ -26,9 +26,13 @@ authors:
     given-names: "Manuel"
     orcid: "https://orcid.org/0000-0002-2932-1524"
     affiliation: "Universidad Técnica Particular de Loja (UTPL)"
+  - family-names: "Bendix"
+    given-names: "Jörg"
+    orcid: "https://orcid.org/0000-0001-6559-2033"
+    affiliation: "Laboratory for Climatology and Remote Sensing (LCRS), Philipps-Universität Marburg"
 license: MIT
-version: "1.0.0"
-date-released: "2026-09-04"
+version: "1.1.0"
+date-released: "2026-10-27"
 repository-code: "https://github.com/gthc-utpl/tamia-radar"
 doi: "10.5281/zenodo.22308495"
 keywords:
@@ -56,7 +60,11 @@ preferred-citation:
     - family-names: "Quiñones-Cuenca"
       given-names: "Manuel"
       orcid: "https://orcid.org/0000-0002-2932-1524"
+    - family-names: "Bendix"
+      given-names: "Jörg"
+      orcid: "https://orcid.org/0000-0001-6559-2033"
   journal: "Remote Sensing"
+  status: "submitted"
   publisher:
     name: "MDPI"
   year: 2026

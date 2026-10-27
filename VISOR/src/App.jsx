@@ -7,8 +7,10 @@ import ColorLegend from './components/ColorLegend/ColorLegend'
 import FABs from './components/FABs/FABs'
 import ToastContainer from './components/common/Toast'
 import LoadingOverlay from './components/common/LoadingOverlay'
+import MaintenanceBanner from './components/common/MaintenanceBanner'
 import useStore from './store/useStore'
 import { useRadarData } from './hooks/useRadarData'
+import { useWebSocketUpdates } from './hooks/useWebSocketUpdates'
 
 const AUTO_REFRESH_MS = 3 * 60 * 1000 // 3 minutes
 
@@ -16,6 +18,10 @@ export default function App() {
   const mapRef = useRef(null)
   const { loadLatest } = useRadarData()
   const animationActive = useStore((s) => s.animationActive)
+
+  // WebSocket en tiempo real (si VITE_ENABLE_WS='true'); el polling de abajo
+  // sigue actuando como respaldo. Gating interno respeta las reglas de hooks.
+  useWebSocketUpdates()
 
   // Initial load
   useEffect(() => {
@@ -40,6 +46,7 @@ export default function App() {
       {/* Map area */}
       <main className="flex-1 relative">
         <MapView mapRef={mapRef} />
+        <MaintenanceBanner />
         <ColorLegend />
         <FABs mapRef={mapRef} />
       </main>

@@ -7,8 +7,8 @@ Source code accompanying the paper:
 
 > **TAMIA: An Edge Computing System for Real-Time Processing and Visualization
 > of Weather Radar Reflectivity in the Tropical Andes.**
-> S. Quiñones-Cuenca, A. Fries, M. Quiñones-Cuenca.
-> Universidad Técnica Particular de Loja (UTPL), Loja, Ecuador. *(in preparation, Remote Sensing, MDPI).*
+> S. Quiñones-Cuenca, A. Fries, M. Quiñones-Cuenca and J. Bendix.
+> Universidad Técnica Particular de Loja (UTPL), Loja, Ecuador, and Philipps-Universität Marburg, Germany. *(submitted to Remote Sensing, MDPI, 2026).*
 
 This repository contains a functional, self-contained copy of the three-layer
 system that processes and visualizes the DBZH reflectivity field of two X-band
@@ -110,6 +110,14 @@ ZENODO_RADAR/
 │   ├── package.json  package-lock.json
 │   ├── vite.config.js  eslint.config.js
 │   └── .env.example
+├── data/
+│   └── evaluation/                   # measurement records of the paper's evaluation (see §6)
+│       ├── README.md                 # data dictionary
+│       ├── reproduce_key_figures.py  # recomputes every figure of the Results section
+│       ├── DATA_LICENSE.txt          # CC BY 4.0
+│       └── *.csv                     # 11 record files
+├── CITATION.cff
+├── LICENSE                           # MIT (source code)
 └── README.md                         # this file
 ```
 
@@ -203,7 +211,28 @@ source code.
 
 ---
 
-## 6. Configuration and security
+## 6. Evaluation data (`data/evaluation/`)
+
+The measurement records that support the operational evaluation reported in the
+paper (91 days of production, 14 April–13 July 2026) are included as 11 CSV
+files with an English data dictionary (`data/evaluation/README.md`): the export
+of the frame registry, the arrival times of the raw files at the LOXX node, the
+logs of the controlled reprocessing on both nodes, the leave-one-out validation
+of the clutter correction, the multi-elevation compositing comparison, the
+WebSocket push-latency test and the link-throughput measurements. Every number
+of the Results section can be recomputed with
+
+```bash
+cd data/evaluation
+python reproduce_key_figures.py      # Python 3.8+, standard library only
+```
+
+The script prints each figure next to the value stated in the article. These
+records are licensed under **CC BY 4.0** (see `data/evaluation/DATA_LICENSE.txt`).
+
+---
+
+## 7. Configuration and security
 
 - Secrets are **never** hardcoded. Uploaders and the API read the API key from
   environment variables (or a git-ignored `uploader_config.ini` / `.env`).
@@ -212,28 +241,32 @@ source code.
 
 ---
 
-## 7. Citation
+## 8. Citation
 
 If you use this software, please cite the accompanying paper (see top of this
 file) and this software deposit:
 
 ```
-[CITATION — to be completed with the Zenodo DOI once minted:
- https://doi.org/10.5281/zenodo.XXXXXXXX]
+Quiñones-Cuenca, S.; Fries, A.; Quiñones-Cuenca, M.; Bendix, J. TAMIA: Edge
+Computing System for Real-Time Weather Radar Reflectivity (v1.1.0). Zenodo, 2026.
+https://doi.org/10.5281/zenodo.22308495
 ```
 
+Machine-readable metadata are in [`CITATION.cff`](CITATION.cff).
+
 ---
 
-## 8. License
+## 9. License
 
 - **Source code** — released under the **MIT License**; see the
-  [`LICENSE`](LICENSE) file. © 2026 Santiago Quiñones-Cuenca,Andreas Fries, Manuel Quiñones-Cuenca (Universidad Técnica Particular de Loja).
-- **Example radar data** (`EDGE/*/data_test/`) — released under
-  **CC BY 4.0**; see the `DATA_LICENSE.txt` file in each `data_test/` directory.
+  [`LICENSE`](LICENSE) file. © 2026 Santiago Quiñones-Cuenca, Andreas Fries, Manuel Quiñones-Cuenca (Universidad Técnica Particular de Loja).
+- **Example radar data** (`EDGE/*/data_test/`) and **evaluation records**
+  (`data/evaluation/`) — released under **CC BY 4.0**; see the
+  `DATA_LICENSE.txt` file in each of those directories.
 
 ---
 
-## 9. Funding and acknowledgments
+## 10. Funding and acknowledgments
 
 This research was funded by Universidad Técnica Particular de Loja (UTPL),
 through the projects PROY_VIN_CLIMA_2024_4209

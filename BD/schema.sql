@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS radar_frames (
     -- Metadatos geográficos (se almacenan por frame en caso de cambios o rectificaciones)
     -- Estructura: [[latMin, lonMin], [latMax, lonMax]]
     bounds JSONB, 
-    center JSONB,                      -- [lon, lat]
+    center JSONB,                      -- [lat, lon] (orden Leaflet; igual que 'bounds')
     
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -43,8 +43,8 @@ CREATE INDEX IF NOT EXISTS idx_radar_frames_radar_id ON radar_frames (radar_id);
 -- 3. Insertar radares iniciales (Datos extraídos de la configuración actual)
 INSERT INTO radars (id, name, location, latitude, longitude, coverage_km, data_path, color_hex)
 VALUES 
-('loxx', 'Radar Loja (LOXX)', 'Loja', -3.98687, -79.14434, 70, 'data/loxx', '#1E90FF'),
-('guaxx', 'Radar Gualaquiza (GUAXX)', 'Celica', -4.0333, -79.8667, 100, 'data/guaxx', '#FFA500')
+('loxx', 'Radar Loja (LOXX)', 'Loja', -3.989060, -79.145308, 70, 'data/loxx', '#1E90FF'),
+('guaxx', 'Radar Celica (GUAXX)', 'Celica', -4.0333, -79.8667, 100, 'data/guaxx', '#FFA500')
 ON CONFLICT (id) DO UPDATE SET 
     latitude = EXCLUDED.latitude,
     longitude = EXCLUDED.longitude,

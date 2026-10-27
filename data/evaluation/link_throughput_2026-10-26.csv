@@ -1,0 +1,9 @@
+site,local_time,tool,server_location,download_mbps,upload_mbps,idle_latency_ms,packet_loss_pct,result_id
+LOXX,2026-10-26T16:40-05:00,speedtest-cli 2.x (Python; nearest server offered by the tool),"Rio de Janeiro, Brazil (4406 km)",13.0,6.2,175,,
+GUAXX,2026-10-26T16:41-05:00,speedtest-cli 2.x (Python; nearest server offered by the tool),"Rio de Janeiro, Brazil (4406 km)",4.4,4.8,183,,
+LOXX,2026-10-26T16:50-05:00,Ookla Speedtest (browser),"Catamayo, Ecuador",60.77,44.65,9,,19835805555
+LOXX,2026-10-26T16:50-05:00,Cloudflare speed test (browser),"Guayaquil, Ecuador",66.7,50.6,34.6,0,
+LOXX,2026-10-26T16:51-05:00,fast.com (browser),Netflix CDN,30,,,,
+GUAXX,2026-10-26T16:52-05:00,Ookla Speedtest (browser),"Catamayo, Ecuador",94.77,94.12,4,,19835812601
+GUAXX,2026-10-26T16:52-05:00,Cloudflare speed test (browser),"Guayaquil, Ecuador",73.6,67.5,44.7,0,
+GUAXX,2026-10-26T16:53-05:00,fast.com (browser),Netflix CDN,62,,,,

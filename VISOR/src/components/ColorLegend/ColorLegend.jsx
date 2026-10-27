@@ -25,13 +25,14 @@ const TICKS = [70, 60, 50, 40, 30, 20, 10]
    a/b are boundary indices: ligera 8–25, moderada 25–40, fuerte 40–55,
    muy fuerte 55–70 dBZ.                                                    */
 const CATEGORIES = [
-  { label: 'Lluvia muy fuerte', icon: 'fa-cloud-bolt',          a: 10, b: 13 },
-  { label: 'Lluvia fuerte',     icon: 'fa-cloud-showers-heavy', a: 7,  b: 10 },
-  { label: 'Lluvia moderada',   icon: 'fa-cloud-showers-water', a: 4,  b: 7  },
-  { label: 'Lluvia ligera',     icon: 'fa-cloud-rain',          a: 0,  b: 4  },
+  { l1: 'Lluvia', l2: 'muy fuerte', icon: 'fa-cloud-bolt',          a: 10, b: 13 },
+  { l1: 'Lluvia', l2: 'fuerte',     icon: 'fa-cloud-showers-heavy', a: 7,  b: 10 },
+  { l1: 'Lluvia', l2: 'moderada',   icon: 'fa-cloud-showers-water', a: 4,  b: 7  },
+  { l1: 'Lluvia', l2: 'ligera',     icon: 'fa-cloud-rain',          a: 0,  b: 4  },
 ].map((c) => ({ ...c, top: topPctForIdx((c.a + c.b) / 2) }))
 
 const BAR_H = 320 // px — tall enough for rotated category labels
+const MOBILE_BAR_H = 200 // px — barra de escala compacta para móvil
 
 /* Bar bottom→top = navy(8) → dark-red(70): reverse so highest dBZ on top */
 const CELLS_TOP_DOWN = [...DBZ_LEGEND].reverse()
@@ -72,17 +73,20 @@ function DesktopLegend({ barHeight }) {
           <div className="px-2.5 pb-2 pt-1">
             <div className="flex items-stretch" style={{ height: `${BAR_H}px` }}>
 
-              {/* Category labels (rotated, left of the bar) */}
-              <div className="relative shrink-0" style={{ width: '18px' }} aria-hidden="true">
+              {/* Category labels (rotated, two lines, left of the bar) */}
+              <div className="relative shrink-0" style={{ width: '30px' }} aria-hidden="true">
                 {CATEGORIES.map((c) => (
                   <div
-                    key={c.label}
-                    className="absolute left-1/2 flex items-center gap-1 whitespace-nowrap
-                      text-[8.5px] font-medium text-gray-200"
+                    key={c.l2}
+                    className="absolute left-1/2 flex items-center gap-1
+                      text-[8px] font-medium text-gray-200"
                     style={{ top: `${c.top}%`, transform: 'translate(-50%,-50%) rotate(-90deg)', transformOrigin: 'center' }}
                   >
                     <i className={`fas ${c.icon} text-[9px] text-gray-400`} />
-                    <span>{c.label}</span>
+                    <span className="flex flex-col items-center text-center leading-tight">
+                      <span className="whitespace-nowrap">{c.l1}</span>
+                      <span className="whitespace-nowrap">{c.l2}</span>
+                    </span>
                   </div>
                 ))}
               </div>
@@ -180,13 +184,13 @@ function MobileLegend({ barHeight }) {
           overflow-hidden">
 
           {/* Header with minimize */}
-          <div className="flex items-center justify-between px-2 py-1">
-            <span className="text-[10px] text-gray-400 font-semibold uppercase tracking-wide">
+          <div className="flex items-center justify-between gap-1 px-1.5 py-0.5">
+            <span className="text-[9px] text-gray-400 font-semibold uppercase">
               dBZ
             </span>
             <button
               onClick={() => setLegendMinimized(true)}
-              className="flex items-center justify-center w-5 h-5 rounded
+              className="flex items-center justify-center w-4 h-4 rounded
                 text-gray-500 active:bg-white/10 transition-colors touch-manipulation"
               aria-label="Minimizar leyenda"
             >
@@ -194,30 +198,83 @@ function MobileLegend({ barHeight }) {
             </button>
           </div>
 
-          {/* Color rows — tap to toggle descriptions */}
+          {/* Escala continua (misma que escritorio, compacta) — tocar revela
+              los nombres de categoría */}
           <div
             className="px-1.5 pb-1.5 cursor-pointer"
             onClick={() => setExpanded((v) => !v)}
+            role="button"
+            tabIndex={0}
+            aria-expanded={expanded}
+            aria-label="Escala de reflectividad; tocar para ver nombres de categoría"
           >
-            <div className="flex flex-col gap-px">
-              {DBZ_LEGEND.map((item) => (
-                <div key={item.range} className="flex items-center gap-1 leading-none">
-                  <span
-                    className="w-3 h-3 rounded-sm shrink-0 border border-black/20"
-                    style={{ backgroundColor: item.color }}
-                    aria-hidden="true"
-                  />
-                  <span className="text-[9px] text-white tabular-nums font-semibold whitespace-nowrap">
-                    {item.range}
-                  </span>
-                  {expanded && (
-                    <span className="text-[9px] text-gray-400 whitespace-nowrap">
-                      {item.description}
-                    </span>
-                  )}
+            <div className="flex items-stretch" style={{ height: `${MOBILE_BAR_H}px` }}>
+
+              {/* Iconos de categoría (siempre) + nombres (al tocar), a la izquierda */}
+              <div
+                className="relative shrink-0 transition-all duration-200"
+                style={{ width: expanded ? '60px' : '14px' }}
+              >
+                {CATEGORIES.map((c) => (
+                  <div
+                    key={c.l2}
+                    className="absolute left-0 flex items-center gap-1"
+                    style={{ top: `${c.top}%`, transform: 'translateY(-50%)' }}
+                  >
+                    <i className={`fas ${c.icon} text-[10px] text-gray-300 shrink-0`} />
+                    {expanded && (
+                      <span className="flex flex-col leading-tight text-[8px] font-medium text-gray-200">
+                        <span className="whitespace-nowrap">{c.l1}</span>
+                        <span className="whitespace-nowrap">{c.l2}</span>
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* Barra de color clasificada */}
+              <div
+                className="shrink-0 overflow-hidden rounded-sm border border-black/40"
+                style={{ width: '12px' }}
+              >
+                <div className="flex flex-col h-full">
+                  {CELLS_TOP_DOWN.map((item) => (
+                    <div key={item.range} style={{ flex: 1, backgroundColor: item.color }} />
+                  ))}
                 </div>
-              ))}
+              </div>
+
+              {/* Marcas numéricas (derecha de la barra) */}
+              <div className="relative shrink-0" style={{ width: '18px' }}>
+                {TICKS.map((t) => (
+                  <div
+                    key={t.v}
+                    className="absolute left-0 flex items-center"
+                    style={{ top: `${t.top}%`, transform: 'translateY(-50%)' }}
+                  >
+                    <span className="block bg-gray-400" style={{ width: '3px', height: '1px' }} />
+                    <span className="ml-0.5 text-[8px] tabular-nums font-semibold text-gray-100 leading-none">
+                      {t.v}
+                    </span>
+                  </div>
+                ))}
+                {/* Marca de piso en la base de la barra */}
+                <div
+                  className="absolute left-0 flex items-center"
+                  style={{ top: '100%', transform: 'translateY(-50%)' }}
+                >
+                  <span className="block bg-gray-500" style={{ width: '3px', height: '1px' }} />
+                  <span className="ml-0.5 text-[7px] tabular-nums text-gray-400 leading-none">{BASE_VAL}</span>
+                </div>
+              </div>
             </div>
+
+            {/* Nota de piso — solo al expandir, para no ensanchar el panel colapsado */}
+            {expanded && (
+              <div className="mt-1 text-[7px] text-gray-500 leading-none">
+                {'<'}{BASE_VAL} dBZ: transparente
+              </div>
+            )}
           </div>
         </div>
       )}
