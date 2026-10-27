@@ -34,7 +34,9 @@ The system is organized in three decoupled layers:
 
 1. **Edge nodes** (`EDGE/LOXX`, `EDGE/GUAXX`) — one per radar. A `watchdog`
    detects each new radar file, the processing pipeline converts it into a
-   georeferenced RGBA PNG, and an uploader POSTs it to the central API.
+   georeferenced RGBA PNG, and an uploader POSTs it to the central API. Frames
+   that cannot be uploaded (link down, API unreachable) are kept in a persistent
+   retry queue on disk and resent when the link returns.
 2. **Central API** (`API_RADAR`) — FastAPI (v2.2) + PostgreSQL. Receives PNGs,
    stores them under `data/radar/{radar_id}/DBZH/{year}/{julian_day}/`, exposes
    REST endpoints and pushes `NEW_RADAR_FRAME` messages over a WebSocket.
@@ -56,7 +58,8 @@ Both radars are operated by UTPL within the RadarNet-Sur network.
 
 *Web viewer showing the DBZH reflectivity of both radars overlaid simultaneously
 on the OpenStreetMap basemap during the precipitation event of 26 June 2026
-(01:10 LT / 06:10 UTC). Same screenshot as Figure 5 of the accompanying paper.*
+(02:10 LT / 07:10 UTC). Same screenshot as Figure 5 of the accompanying paper
+(reduced to 1920 px wide). Base map: © OpenStreetMap contributors (ODbL).*
 
 ### DBZH color scale (Furuno WR110 jet, 13 classes)
 
@@ -74,51 +77,65 @@ colors:       #000080 #0000B4 #0060FF #00C8F0 #00E0A0 #00C800 #80E000
 ## 2. Repository structure
 
 ```
-ZENODO_RADAR/
-├── docs/
-│   └── img/
-│       └── figura_5_visor.png     # web viewer screenshot (README §1, paper Figure 5)
+tamia-radar/
 ├── EDGE/
 │   ├── LOXX/                          # Edge node — Radar Loja (ODIM HDF5)
-│   │   ├── generar_png_loxx.py        # DBZH processing pipeline
-│   │   ├── loxx_dbzh_georeferenciado.py
-│   │   ├── radar_edge_uploader_loxx.py# watchdog + uploader (reads key from env/ini)
-│   │   ├── clutter_cache_dbzh.pkl  # precomputed clutter map
-│   │   ├── config.ini
-│   │   ├── uploader_config.ini.example
+│   │   ├── loxx_dbzh_georeferenciado.py  # DBZH extraction, clutter correction, projection
+│   │   ├── generar_png_loxx.py        # DBZH processing pipeline (one .h5.gz -> PNG)
+│   │   ├── radar_edge_uploader_loxx.py   # watchdog + uploader + retry queue
+│   │   ├── clutter_cache_dbzh.pkl     # precomputed clutter map
+│   │   ├── config.ini                 # processing configuration
+│   │   ├── uploader_config.ini.example   # uploader template (key, URL, paths)
 │   │   ├── requirements.txt
 │   │   ├── README.md
-│   │   └── data_test/                 # example input frames (see §5)
+│   │   ├── .gitignore
+│   │   └── data_test/                 # example input frames (see §5), CC BY 4.0
+│   │       ├── 20260626/              # 7 frames of the 26 June 2026 event
+│   │       ├── clutter_data/          # 5 reference frames (1 Dec 2025)
+│   │       └── DATA_LICENSE.txt
 │   └── GUAXX/                         # Edge node — Radar Celica (NetCDF4)
-│       ├── generar_png_radar.py       # DBZH processing pipeline
-│       ├── radar_edge_uploader_guaxx.py
-│       ├── config.ini                 # no plaintext secrets
-│       ├── .env.example
-│       ├── README.md
+│       ├── generar_png_radar.py       # DBZH processing pipeline (one .nc4 -> PNG)
+│       ├── radar_edge_uploader_guaxx.py  # watchdog + uploader + retry queue
+│       ├── config.ini                 # radar, processing and geo configuration
+│       ├── .env.example               # node environment template (key, URL)
 │       ├── requirements.txt
-│       └── data_test/                 # example .nc4 frames
+│       ├── README.md
+│       ├── .gitignore
+│       └── data_test/                 # 6 example .nc4 frames (see §5), CC BY 4.0
+│           └── DATA_LICENSE.txt
 ├── API_RADAR/                         # Central API (FastAPI + PostgreSQL)
 │   ├── main.py                        # endpoints + WebSocket
-│   ├── database.py  models.py
-│   ├── .env.example
+│   ├── database.py  models.py  __init__.py
+│   ├── .env.example                   # DATABASE_URL, RADAR_API_KEY
 │   └── requirements.txt
-├── BD/                               # Database
-│   ├── schema.sql
-│   └── migrate_history.py
-├── VISOR/                            # Web viewer (React + Vite + Leaflet)
-│   ├── src/  public/  index.html
+├── BD/
+│   └── schema.sql                     # PostgreSQL schema + radar seed rows
+├── VISOR/                             # Web viewer (React 19 + Vite + Leaflet)
+│   ├── src/
+│   │   ├── components/                # Map, Sidebar, AnimationBar, ColorLegend, Header, FABs, common
+│   │   ├── hooks/                     # useRadarData, useAnimation, useWebSocketUpdates, ...
+│   │   ├── services/                  # radarService (REST), websocketClient, imageCache
+│   │   ├── store/                     # Zustand store
+│   │   ├── config/  utils/            # radar config, julian-date and freshness helpers
+│   │   ├── App.jsx  main.jsx  index.css
+│   ├── index.html
 │   ├── package.json  package-lock.json
 │   ├── vite.config.js  eslint.config.js
-│   └── .env.example
+│   ├── .env.example                   # VITE_API_BASE
+│   └── .gitignore
 ├── data/
-│   └── evaluation/                   # measurement records of the paper's evaluation (see §6)
-│       ├── README.md                 # data dictionary
-│       ├── reproduce_key_figures.py  # recomputes every figure of the Results section
-│       ├── DATA_LICENSE.txt          # CC BY 4.0
-│       └── *.csv                     # 11 record files
+│   └── evaluation/                    # measurement records of the paper's evaluation (see §6)
+│       ├── README.md                  # data dictionary
+│       ├── reproduce_key_figures.py   # recomputes every figure of the Results section
+│       ├── DATA_LICENSE.txt           # CC BY 4.0
+│       └── *.csv                      # 11 record files
+├── docs/
+│   └── img/
+│       └── figura_5_visor.png         # web viewer screenshot (README §1, paper Figure 5)
 ├── CITATION.cff
-├── LICENSE                           # MIT (source code)
-└── README.md                         # this file
+├── LICENSE                            # MIT (source code)
+├── .gitignore
+└── README.md                          # this file
 ```
 
 `node_modules/` and `dist/` are not shipped — regenerate them with
@@ -174,7 +191,7 @@ python radar_edge_uploader_loxx.py
 Process a single stored frame without the watchdog (uses `data_test/`):
 
 ```bash
-python generar_png_loxx.py   # see the script header for CLI options
+python generar_png_loxx.py data_test/20260626/1003_20260626_034500.h5.gz
 ```
 
 GUAXX is analogous (`EDGE/GUAXX`, uses `.env` / `.env.example`; see its
@@ -203,7 +220,8 @@ without access to the live radars:
   clutter-correction figure.
 - **LOXX** `data_test/clutter_data/` — 5 frames used to illustrate clutter-map
   computation (`clutter_cache_dbzh.pkl` is already provided).
-- **GUAXX** `data_test/` — 6 NetCDF4 frames (2 April 2025).
+- **GUAXX** `data_test/` — 6 NetCDF4 frames of 2 April 2025 (00:00–00:25 UTC,
+  5-min step).
 
 These example datasets are licensed under **CC BY 4.0** (see the
 `DATA_LICENSE.txt` file in each `data_test/` directory), separately from the
@@ -248,7 +266,7 @@ file) and this software deposit:
 
 ```
 Quiñones-Cuenca, S.; Fries, A.; Quiñones-Cuenca, M.; Bendix, J. TAMIA: Edge
-Computing System for Real-Time Weather Radar Reflectivity (v1.1.0). Zenodo, 2026.
+Computing System for Real-Time Weather Radar Reflectivity (v1.1.1). Zenodo, 2026.
 https://doi.org/10.5281/zenodo.22308494
 ```
 

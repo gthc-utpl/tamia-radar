@@ -15,7 +15,7 @@ Coverage: ~70 km.
 |------|---------|
 | `loxx_dbzh_georeferenciado.py` | Core module: DBZH extraction, clutter correction, 2-D median filter, polar→Cartesian projection with WGS84 bounds. |
 | `generar_png_loxx.py` | Processing pipeline. Reads one `.h5.gz`, produces an RGBA PNG rasterized directly from the Cartesian grid with PIL (Furuno WR110 "v8" 13-class color scale). |
-| `radar_edge_uploader_loxx.py` | `watchdog` service: on each new file, calls the pipeline and uploads the PNG to the API (API key read from environment / ini, never hardcoded). |
+| `radar_edge_uploader_loxx.py` | `watchdog` service: on each new file, calls the pipeline and uploads the PNG to the API (API key read from environment / ini, never hardcoded). Failed uploads (link down, API unreachable) are appended to a persistent retry queue (`upload_retry_queue.json` in the output directory) and resent at start-up and before each new frame, so no frame is lost during an outage. |
 | `clutter_cache_dbzh.pkl` | Precomputed clutter map used by the pipeline. |
 | `config.ini` | Processing configuration (paths, thresholds, cache file, clutter regeneration). |
 | `uploader_config.ini.example` | Template for the uploader configuration (copy to `uploader_config.ini`, git-ignored). |

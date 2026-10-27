@@ -31,7 +31,7 @@ authors:
     orcid: "https://orcid.org/0000-0001-6559-2033"
     affiliation: "Laboratory for Climatology and Remote Sensing (LCRS), Philipps-Universität Marburg"
 license: MIT
-version: "1.1.0"
+version: "1.1.1"
 date-released: "2026-10-27"
 repository-code: "https://github.com/gthc-utpl/tamia-radar"
 doi: "10.5281/zenodo.22308494"
