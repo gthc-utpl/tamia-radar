@@ -249,7 +249,7 @@ file) and this software deposit:
 ```
 Quiñones-Cuenca, S.; Fries, A.; Quiñones-Cuenca, M.; Bendix, J. TAMIA: Edge
 Computing System for Real-Time Weather Radar Reflectivity (v1.1.0). Zenodo, 2026.
-https://doi.org/10.5281/zenodo.22308495
+https://doi.org/10.5281/zenodo.22308494
 ```
 
 Machine-readable metadata are in [`CITATION.cff`](CITATION.cff).
